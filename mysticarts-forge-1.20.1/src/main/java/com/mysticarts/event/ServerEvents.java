@@ -24,7 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
@@ -149,7 +149,7 @@ public class ServerEvents {
             }
             if (ab.flying && t % 20 == 0) {
                 m.consumeMana(1);
-                p.serverLevel().sendParticles(MagicUtil.SCARLET, p.getX(), p.getY() + 0.8, p.getZ(),
+                p.serverLevel().sendParticles(MagicUtil.scarlet(), p.getX(), p.getY() + 0.8, p.getZ(),
                         3, 0.3, 0.2, 0.3, 0.0);
             }
         } else if (m.isCloakFlight()) {
@@ -211,8 +211,8 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void onEntityJoin(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide && event.getEntity() instanceof Wolf wolf
-                && FamiliarManager.shouldRemoveOnJoin(wolf, event.getLevel().getGameTime())) {
+        if (!event.getLevel().isClientSide && event.getEntity() instanceof Cat cat
+                && FamiliarManager.shouldRemoveOnJoin(cat, event.getLevel().getGameTime())) {
             event.setCanceled(true);
         }
     }

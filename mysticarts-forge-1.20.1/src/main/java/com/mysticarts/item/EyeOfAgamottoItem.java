@@ -51,7 +51,8 @@ public class EyeOfAgamottoItem extends Item {
 
         m.consumeMana(MANA_COST);
         ServerLevel from = sp.serverLevel();
-        from.sendParticles(ParticleTypes.HAPPY_VILLAGER, sp.getX(), sp.getY() + 1, sp.getZ(), 40, 0.5, 0.8, 0.5, 0.1);
+        MagicUtil.helix(from, sp.position(), 2.4, 1.0, MagicUtil.green(), 3);
+        MagicUtil.shockwave(from, sp.position().add(0, 0.2, 0), MagicUtil.green(), 0.25, 40);
         sp.teleportTo(dest, s.x(), s.y(), s.z(), s.yaw(), s.pitch());
         sp.setHealth(Math.max(sp.getHealth(), Math.min(s.health(), sp.getMaxHealth())));
         sp.getFoodData().setFoodLevel(Math.max(sp.getFoodData().getFoodLevel(), s.food()));
@@ -59,7 +60,9 @@ public class EyeOfAgamottoItem extends Item {
         sp.fallDistance = 0;
         sp.setDeltaMovement(Vec3.ZERO);
         sp.hurtMarked = true;
-        dest.sendParticles(ParticleTypes.HAPPY_VILLAGER, s.x(), s.y() + 1, s.z(), 40, 0.5, 0.8, 0.5, 0.1);
+        MagicUtil.helix(dest, new Vec3(s.x(), s.y(), s.z()), 2.4, 1.0, MagicUtil.green(), -3);
+        MagicUtil.magicCircle(dest, new Vec3(s.x(), s.y() + 0.1, s.z()), 2.0, MagicUtil.green(), MagicUtil.green(), 0.0);
+        MagicUtil.explode(dest, new Vec3(s.x(), s.y() + 1, s.z()), MagicUtil.green(), 30, 0.3);
         dest.playSound(null, s.x(), s.y(), s.z(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 1.0f, 0.5f);
 
         TimeHistory.clear(sp.getUUID());

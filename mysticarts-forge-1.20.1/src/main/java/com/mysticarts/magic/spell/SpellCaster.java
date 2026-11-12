@@ -4,6 +4,7 @@ import com.mysticarts.magic.MagicSchool;
 import com.mysticarts.magic.MagicSync;
 import com.mysticarts.magic.PlayerMagic;
 import com.mysticarts.magic.capability.MagicCapability;
+import com.mysticarts.item.FocusItem;
 import com.mysticarts.magic.spell.Spell.CastContext;
 import com.mysticarts.util.MagicUtil;
 import net.minecraft.network.chat.Component;
@@ -44,7 +45,15 @@ public final class SpellCaster {
                     o -> o != p && MagicCapability.of(o).getSchool() == MagicSchool.CHAOS).isEmpty();
             if (chaosNearby) power *= 1.25f; // ...and Billy is stronger near Wanda
         }
+        if (FocusItem.isHolding(p, m.getSchool())) power *= FocusItem.POWER_BONUS;
         return power;
+    }
+
+    public static int effectiveCost(ServerPlayer p, PlayerMagic m, Spell spell) {
+        if (FocusItem.isHolding(p, m.getSchool())) {
+            return Math.max(1, Math.round(spell.manaCost() * FocusItem.COST_FACTOR));
+        }
+        return spell.manaCost();
     }
 
     public static void cast(ServerPlayer p) {
@@ -67,17 +76,18 @@ public final class SpellCaster {
             MagicUtil.msg(p, "cooldown", (m.cooldownLeft(spell.id(), now) + 19) / 20);
             return;
         }
-        if (m.getMana() < spell.manaCost()) {
-            MagicUtil.msg(p, "not_enough_mana", spell.manaCost());
+        int cost = effectiveCost(p, m, spell);
+        if (m.getMana() < cost) {
+            MagicUtil.msg(p, "not_enough_mana", cost);
             return;
         }
 
         // Chaos magic is unstable: the more corruption, the higher the backfire chance.
         if (m.getSchool() == MagicSchool.CHAOS && p.getRandom().nextFloat() < m.getCorruption() / 250.0f) {
-            m.consumeMana(spell.manaCost() / 2);
+            m.consumeMana(cost / 2);
             m.setCooldown(spell.id(), now + 20);
             p.hurt(p.damageSources().magic(), 2.0f);
-            MagicUtil.burst(level, p.position().add(0, 1, 0), MagicUtil.SCARLET, 25);
+            MagicUtil.explode(level, p.position().add(0, 1, 0), MagicUtil.scarlet(), 30, 0.35);
             MagicUtil.msg(p, "fizzle");
             MagicSync.sync(p);
             return;
@@ -86,10 +96,10 @@ public final class SpellCaster {
         CastContext ctx = new CastContext(p, level, m, power(p, m));
         if (!spell.effect().cast(ctx)) return;
 
-        m.consumeMana(spell.manaCost());
+        m.consumeMana(cost);
         m.setCooldown(spell.id(), now + spell.cooldown());
         m.addCorruption(spell.corruption());
-        boolean levelUp = m.addXp(spell.manaCost() / 5 + 1);
+        boolean levelUp = m.addXp(cost / 5 + 1);
         if (levelUp) {
             p.sendSystemMessage(Component.translatable("message.mysticarts.level_up", m.getLevel())
                     .withStyle(s -> s.withColor(m.getSchool().getColor())));

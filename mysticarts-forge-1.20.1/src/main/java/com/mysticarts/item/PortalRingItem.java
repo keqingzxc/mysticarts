@@ -51,7 +51,8 @@ public class PortalRingItem extends Item {
             bound.putFloat("Yaw", sp.getYRot());
             bound.putFloat("Pitch", sp.getXRot());
             MagicUtil.msg(sp, "ring_bound");
-            MagicUtil.burst(sl, sp.position().add(0, 1, 0), MagicUtil.GOLD, 20);
+            MagicUtil.portalRing(sl, sp.position().add(0, 1.1, 0).add(sp.getLookAngle().scale(0.8)), sp.getLookAngle(), 0.9, MagicUtil.gold(), 30);
+            MagicUtil.explode(sl, sp.position().add(0, 1, 0), MagicUtil.gold(), 20, 0.25);
             level.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME,
                     SoundSource.PLAYERS, 1.0f, 1.0f);
             return InteractionResultHolder.consume(stack);
@@ -75,11 +76,16 @@ public class PortalRingItem extends Item {
         }
 
         m.consumeMana(MANA_COST);
-        MagicUtil.burst(sl, sp.position().add(0, 1, 0), MagicUtil.GOLD, 40);
+        Vec3 look = sp.getLookAngle();
+        MagicUtil.portalRing(sl, sp.position().add(0, 1.1, 0).add(look.scale(0.8)), look, 1.2, MagicUtil.gold(), 44);
+        MagicUtil.portalRing(sl, sp.position().add(0, 1.1, 0).add(look.scale(0.8)), look, 0.7, MagicUtil.goldRune(), 8);
+        MagicUtil.explode(sl, sp.position().add(0, 1, 0), MagicUtil.gold(), 30, 0.3);
         sp.teleportTo(dest, bound.getDouble("X"), bound.getDouble("Y"), bound.getDouble("Z"),
                 bound.getFloat("Yaw"), bound.getFloat("Pitch"));
-        MagicUtil.burst(dest, new Vec3(bound.getDouble("X"), bound.getDouble("Y") + 1, bound.getDouble("Z")),
-                MagicUtil.GOLD, 40);
+        Vec3 arrive = new Vec3(bound.getDouble("X"), bound.getDouble("Y") + 1, bound.getDouble("Z"));
+        MagicUtil.portalRing(dest, arrive.subtract(look.scale(0.8)), look, 1.2, MagicUtil.gold(), 44);
+        MagicUtil.shockwave(dest, arrive.subtract(0, 0.8, 0), MagicUtil.gold(), 0.2, 30);
+        MagicUtil.explode(dest, arrive, MagicUtil.gold(), 30, 0.3);
         dest.playSound(null, bound.getDouble("X"), bound.getDouble("Y"), bound.getDouble("Z"),
                 SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
         sp.getCooldowns().addCooldown(this, 100);

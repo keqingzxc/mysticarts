@@ -63,8 +63,10 @@ public class TomeItem extends Item {
 
         MagicSync.sync(sp);
         sp.sendSystemMessage(Component.translatable("message.mysticarts.school_learned", school.getDisplayName()));
-        ((ServerLevel) level).sendParticles(net.minecraft.core.particles.ParticleTypes.ENCHANT,
-                sp.getX(), sp.getY() + 1.2, sp.getZ(), 60, 0.6, 0.8, 0.6, 0.6);
+        ServerLevel sl = (ServerLevel) level;
+        MagicUtil.magicCircle(sl, sp.position().add(0, 0.1, 0), 2.2, MagicUtil.forSchool(school), MagicUtil.runeFor(school), 0.0);
+        MagicUtil.helix(sl, sp.position(), 2.6, 1.0, MagicUtil.forSchool(school), 3);
+        MagicUtil.explode(sl, sp.position().add(0, 1.1, 0), MagicUtil.forSchool(school), 40, 0.35);
         level.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.ENCHANTMENT_TABLE_USE,
                 SoundSource.PLAYERS, 1.0f, 0.8f);
         return InteractionResultHolder.consume(stack);

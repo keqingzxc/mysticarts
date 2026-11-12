@@ -6,6 +6,7 @@ import com.mysticarts.registry.ModBlocks;
 import com.mysticarts.registry.ModCreativeTabs;
 import com.mysticarts.registry.ModEntities;
 import com.mysticarts.registry.ModItems;
+import com.mysticarts.registry.ModParticles;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -22,6 +23,7 @@ public class MysticArts {
         ModBlocks.BLOCKS.register(bus);
         ModItems.ITEMS.register(bus);
         ModEntities.ENTITIES.register(bus);
+        ModParticles.PARTICLES.register(bus);
         ModCreativeTabs.TABS.register(bus);
         bus.addListener(this::commonSetup);
     }

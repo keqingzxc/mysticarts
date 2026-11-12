@@ -6,7 +6,7 @@ import com.mysticarts.magic.PlayerMagic;
 import com.mysticarts.magic.capability.MagicCapability;
 import com.mysticarts.util.MagicUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
+import com.mysticarts.registry.ModParticles;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,7 +54,10 @@ public class MysticAltarBlock extends Block {
                 MagicSync.sync(sp);
                 MagicUtil.msg(sp, "altar_used");
                 Vec3 c = Vec3.atCenterOf(pos).add(0, 0.8, 0);
-                ((ServerLevel) level).sendParticles(ParticleTypes.ENCHANT, c.x, c.y, c.z, 40, 0.5, 0.5, 0.5, 0.5);
+                ServerLevel sl = (ServerLevel) level;
+                MagicUtil.helix(sl, Vec3.atBottomCenterOf(pos).add(0, 1, 0), 2.5, 0.8, MagicUtil.gold(), 3);
+                MagicUtil.explode(sl, c, MagicUtil.purple(), 30, 0.35);
+                MagicUtil.shockwave(sl, c.subtract(0, 0.6, 0), MagicUtil.gold(), 0.25, 36);
                 level.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0f, 1.2f);
             }
         }
@@ -64,7 +67,7 @@ public class MysticAltarBlock extends Block {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(3) == 0) {
-            level.addParticle(ParticleTypes.ENCHANT,
+            level.addParticle(ModParticles.GOLD_SPARK.get(),
                     pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5,
                     (random.nextDouble() - 0.5) * 0.6, 0.4, (random.nextDouble() - 0.5) * 0.6);
         }

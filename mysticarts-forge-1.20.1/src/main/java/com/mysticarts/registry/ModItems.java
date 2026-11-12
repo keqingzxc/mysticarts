@@ -35,6 +35,26 @@ public class ModItems {
     public static final RegistryObject<Item> CLOAK = ITEMS.register("cloak_of_levitation",
             () -> new CloakOfLevitationItem(epic()));
 
+    // ---- casting foci (one per school) ----
+    public static final RegistryObject<Item> STAFF_OF_VISHANTI = ITEMS.register("staff_of_vishanti",
+            () -> new FocusItem(MagicSchool.STRANGE, epic()));
+    public static final RegistryObject<Item> SCARLET_SCEPTER = ITEMS.register("scarlet_scepter",
+            () -> new FocusItem(MagicSchool.CHAOS, epic()));
+    public static final RegistryObject<Item> WITCHS_ATHAME = ITEMS.register("witchs_athame",
+            () -> new FocusItem(MagicSchool.WITCHCRAFT, epic()));
+    public static final RegistryObject<Item> WICCAN_SIGIL = ITEMS.register("wiccan_sigil",
+            () -> new FocusItem(MagicSchool.WICCAN, epic()));
+
+    // ---- school artifacts ----
+    public static final RegistryObject<Item> MIRROR_SHARD = ITEMS.register("mirror_shard",
+            () -> new MirrorShardItem(new Item.Properties().durability(6).rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> CHAOS_ORB = ITEMS.register("chaos_orb",
+            () -> new ChaosOrbItem(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> WITCHS_BREW = ITEMS.register("witchs_brew",
+            () -> new WitchsBrewItem(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> HEARTSTONE = ITEMS.register("heartstone",
+            () -> new HeartstoneItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+
     public static final RegistryObject<Item> MYSTIC_ALTAR = ITEMS.register("mystic_altar",
             () -> new BlockItem(ModBlocks.MYSTIC_ALTAR.get(), new Item.Properties().rarity(Rarity.UNCOMMON)));
 }

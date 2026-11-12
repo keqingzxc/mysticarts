@@ -27,7 +27,9 @@ public final class MirrorDimension {
     public static boolean toggle(ServerPlayer p, PlayerMagic m) {
         MinecraftServer server = p.server;
         ServerLevel from = p.serverLevel();
-        MagicUtil.burst(from, p.position().add(0, 1, 0), MagicUtil.GOLD, 40);
+        MagicUtil.explode(from, p.position().add(0, 1, 0), MagicUtil.gold(), 50, 0.5);
+        MagicUtil.magicCircle(from, p.position().add(0, 0.1, 0), 2.0, MagicUtil.gold(), MagicUtil.goldRune(), 0.0);
+        MagicUtil.helix(from, p.position(), 2.6, 1.0, MagicUtil.gold(), 3);
 
         if (isIn(p)) {
             ServerLevel dest = null;
@@ -44,7 +46,8 @@ public final class MirrorDimension {
             }
             p.teleportTo(dest, x, y, z, p.getYRot(), p.getXRot());
             m.clearOrigin();
-            MagicUtil.burst(dest, new Vec3(x, y + 1, z), MagicUtil.GOLD, 40);
+            MagicUtil.explode(dest, new Vec3(x, y + 1, z), MagicUtil.gold(), 50, 0.5);
+            MagicUtil.magicCircle(dest, new Vec3(x, y + 0.1, z), 2.0, MagicUtil.gold(), MagicUtil.goldRune(), 0.0);
             return true;
         }
 
@@ -57,7 +60,8 @@ public final class MirrorDimension {
         mirror.getChunk(x >> 4, z >> 4); // make sure the chunk is generated before reading the height
         int y = mirror.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
         p.teleportTo(mirror, x + 0.5, y, z + 0.5, p.getYRot(), p.getXRot());
-        MagicUtil.burst(mirror, new Vec3(x + 0.5, y + 1, z + 0.5), MagicUtil.GOLD, 40);
+        MagicUtil.explode(mirror, new Vec3(x + 0.5, y + 1, z + 0.5), MagicUtil.gold(), 50, 0.5);
+        MagicUtil.magicCircle(mirror, new Vec3(x + 0.5, y + 0.1, z + 0.5), 2.0, MagicUtil.gold(), MagicUtil.goldRune(), 0.0);
         return true;
     }
 }

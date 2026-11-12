@@ -1,6 +1,7 @@
 package com.mysticarts.registry;
 
 import com.mysticarts.MysticArts;
+import com.mysticarts.entity.ChaosOrbEntity;
 import com.mysticarts.entity.MandalaEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -19,4 +20,11 @@ public class ModEntities {
                     .updateInterval(1)
                     .fireImmune()
                     .build(MysticArts.MODID + ":mandala"));
+
+    public static final RegistryObject<EntityType<ChaosOrbEntity>> CHAOS_ORB = ENTITIES.register("chaos_orb",
+            () -> EntityType.Builder.<ChaosOrbEntity>of(ChaosOrbEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f)
+                    .clientTrackingRange(4)
+                    .updateInterval(10)
+                    .build(MysticArts.MODID + ":chaos_orb"));
 }

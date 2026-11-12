@@ -2,10 +2,14 @@ package com.mysticarts.client;
 
 import com.mysticarts.MysticArts;
 import com.mysticarts.registry.ModEntities;
+import com.mysticarts.registry.ModParticles;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -21,6 +25,35 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.MANDALA.get(), MandalaRenderer::new);
+        event.registerEntityRenderer(ModEntities.CHAOS_ORB.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.6F, true));
+    }
+
+    @SubscribeEvent
+    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(ModModelLayers.CLOAK, CloakModel::createLayer);
+    }
+
+    @SubscribeEvent
+    public static void addLayers(EntityRenderersEvent.AddLayers event) {
+        for (String skin : event.getSkins()) {
+            PlayerRenderer renderer = event.getSkin(skin);
+            if (renderer != null) {
+                renderer.addLayer(new CloakLayer(renderer, event.getEntityModels()));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
+        // (sprites, size, lifetime, gravity, spin)
+        event.registerSpriteSet(ModParticles.GOLD_SPARK.get(), s -> new GlowParticle.Provider(s, 0.20f, 22, 0.0f, false));
+        event.registerSpriteSet(ModParticles.GOLD_RUNE.get(), s -> new GlowParticle.Provider(s, 0.55f, 40, 0.0f, true));
+        event.registerSpriteSet(ModParticles.SCARLET_SPARK.get(), s -> new GlowParticle.Provider(s, 0.22f, 20, 0.0f, false));
+        event.registerSpriteSet(ModParticles.SCARLET_WISP.get(), s -> new GlowParticle.Provider(s, 0.42f, 26, -0.01f, true));
+        event.registerSpriteSet(ModParticles.PURPLE_WISP.get(), s -> new GlowParticle.Provider(s, 0.40f, 30, -0.015f, true));
+        event.registerSpriteSet(ModParticles.PURPLE_RUNE.get(), s -> new GlowParticle.Provider(s, 0.55f, 40, 0.0f, true));
+        event.registerSpriteSet(ModParticles.YELLOW_STAR.get(), s -> new GlowParticle.Provider(s, 0.26f, 24, 0.0f, true));
+        event.registerSpriteSet(ModParticles.GREEN_TIME.get(), s -> new GlowParticle.Provider(s, 0.30f, 28, -0.01f, true));
     }
 
     @SubscribeEvent

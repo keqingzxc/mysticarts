@@ -1,6 +1,6 @@
 package com.mysticarts.entity;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.mysticarts.registry.ModParticles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -81,7 +81,7 @@ public class MandalaEntity extends Entity {
                 proj.setOwner(owner);
                 proj.hurtMarked = true;
             }
-            sl.sendParticles(ParticleTypes.WAX_ON, proj.getX(), proj.getY(), proj.getZ(), 8, 0.2, 0.2, 0.2, 0.1);
+            sl.sendParticles(ModParticles.GOLD_SPARK.get(), proj.getX(), proj.getY(), proj.getZ(), 8, 0.2, 0.2, 0.2, 0.1);
         }
 
         for (Entity e : sl.getEntities(this, box, ent -> ent instanceof LivingEntity && !(ent instanceof Player))) {
@@ -100,7 +100,7 @@ public class MandalaEntity extends Entity {
             for (int i = 0; i < 16; i++) {
                 double a = 2 * Math.PI * i / 16 + tickCount * 0.12;
                 Vec3 pt = center.add(right.scale(Math.cos(a) * 1.15)).add(0, Math.sin(a) * 1.15, 0);
-                sl.sendParticles(ParticleTypes.WAX_ON, pt.x, pt.y, pt.z, 1, 0, 0, 0, 0);
+                sl.sendParticles(ModParticles.GOLD_SPARK.get(), pt.x, pt.y, pt.z, 1, 0, 0, 0, 0);
             }
         }
     }

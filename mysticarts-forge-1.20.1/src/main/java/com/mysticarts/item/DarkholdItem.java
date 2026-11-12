@@ -58,8 +58,9 @@ public class DarkholdItem extends Item {
             }
             MagicSync.sync(sp);
         }
-        sl.sendParticles(net.minecraft.core.particles.ParticleTypes.SOUL_FIRE_FLAME,
-                sp.getX(), sp.getY() + 1.0, sp.getZ(), 40, 0.5, 0.7, 0.5, 0.05);
+        MagicUtil.helix(sl, sp.position(), 2.4, 0.9, MagicUtil.purple(), 3);
+        MagicUtil.helix(sl, sp.position(), 2.4, 0.9, MagicUtil.scarletWisp(), 2.5);
+        MagicUtil.explode(sl, sp.position().add(0, 1.0, 0), MagicUtil.purple(), 30, 0.3);
         level.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.WITHER_AMBIENT,
                 SoundSource.PLAYERS, 0.8f, 0.6f);
         sp.getCooldowns().addCooldown(this, 600);
