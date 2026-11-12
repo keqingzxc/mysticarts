@@ -74,5 +74,20 @@
   "tooltip.mysticarts.ring_bound": "Bound: %s  %s, %s, %s",
   "tooltip.mysticarts.eye": "Rewinds you ~6 seconds back in time (40 mana).",
   "tooltip.mysticarts.cloak": "Grants flight while you have mana. No fall damage.",
-  "tooltip.mysticarts.altar": "Right-click to restore mana and reduce corruption."
+  "tooltip.mysticarts.altar": "Right-click to restore mana and reduce corruption.",
+  "item.mysticarts.staff_of_vishanti": "Staff of the Vishanti",
+  "item.mysticarts.scarlet_scepter": "Scarlet Scepter",
+  "item.mysticarts.witchs_athame": "Witch's Athame",
+  "item.mysticarts.wiccan_sigil": "Wiccan Sigil",
+  "item.mysticarts.mirror_shard": "Mirror Shard",
+  "item.mysticarts.chaos_orb": "Chaos Orb",
+  "item.mysticarts.witchs_brew": "Witch's Brew",
+  "item.mysticarts.heartstone": "Heartstone",
+  "entity.mysticarts.chaos_orb": "Chaos Orb",
+  "tooltip.mysticarts.focus": "Hold while casting %s spells: +25% power, -15% mana cost.",
+  "tooltip.mysticarts.mirror_shard": "Use to enter or leave the Mirror Dimension (40 mana, 6 uses).",
+  "tooltip.mysticarts.chaos_orb": "Throw it: a scarlet explosion that burns and hurls enemies away.",
+  "tooltip.mysticarts.brew": "Restores mana, regenerates health and eases corruption.",
+  "tooltip.mysticarts.heartstone": "Heals you and allies within 8 blocks (30 mana).",
+  "message.mysticarts.no_mana_item": "Not enough mana (%s needed)"
 }

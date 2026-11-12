@@ -74,5 +74,20 @@
   "tooltip.mysticarts.ring_bound": "Привязано: %s  %s, %s, %s",
   "tooltip.mysticarts.eye": "Откатывает вас на ~6 секунд назад во времени (40 маны).",
   "tooltip.mysticarts.cloak": "Даёт полёт, пока есть мана. Нет урона от падения.",
-  "tooltip.mysticarts.altar": "ПКМ: восстановить ману и ослабить порчу."
+  "tooltip.mysticarts.altar": "ПКМ: восстановить ману и ослабить порчу.",
+  "item.mysticarts.staff_of_vishanti": "Посох Вишанти",
+  "item.mysticarts.scarlet_scepter": "Алый скипетр",
+  "item.mysticarts.witchs_athame": "Ритуальный атам",
+  "item.mysticarts.wiccan_sigil": "Печать Виккана",
+  "item.mysticarts.mirror_shard": "Осколок зеркала",
+  "item.mysticarts.chaos_orb": "Сфера хаоса",
+  "item.mysticarts.witchs_brew": "Ведьмино зелье",
+  "item.mysticarts.heartstone": "Сердце-камень",
+  "entity.mysticarts.chaos_orb": "Сфера хаоса",
+  "tooltip.mysticarts.focus": "В руке при заклинаниях школы «%s»: +25% силы, −15% маны.",
+  "tooltip.mysticarts.mirror_shard": "Вход и выход из Измерения Зеркала (40 маны, 6 использований).",
+  "tooltip.mysticarts.chaos_orb": "Бросьте: алый взрыв, который жжёт и отбрасывает врагов.",
+  "tooltip.mysticarts.brew": "Восстанавливает ману, лечит и ослабляет Порчу.",
+  "tooltip.mysticarts.heartstone": "Лечит вас и союзников в радиусе 8 блоков (30 маны).",
+  "message.mysticarts.no_mana_item": "Недостаточно маны (нужно %s)"
 }
