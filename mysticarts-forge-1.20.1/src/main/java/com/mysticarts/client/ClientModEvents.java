@@ -49,15 +49,21 @@ public class ClientModEvents {
 
     @SubscribeEvent
     public static void registerParticles(RegisterParticleProvidersEvent event) {
-        // (sprites, size, lifetime, gravity, spin)
-        event.registerSpriteSet(ModParticles.GOLD_SPARK.get(), s -> new GlowParticle.Provider(s, 0.20f, 22, 0.0f, false));
-        event.registerSpriteSet(ModParticles.GOLD_RUNE.get(), s -> new GlowParticle.Provider(s, 0.55f, 40, 0.0f, true));
-        event.registerSpriteSet(ModParticles.SCARLET_SPARK.get(), s -> new GlowParticle.Provider(s, 0.22f, 20, 0.0f, false));
-        event.registerSpriteSet(ModParticles.SCARLET_WISP.get(), s -> new GlowParticle.Provider(s, 0.42f, 26, -0.01f, true));
-        event.registerSpriteSet(ModParticles.PURPLE_WISP.get(), s -> new GlowParticle.Provider(s, 0.40f, 30, -0.015f, true));
-        event.registerSpriteSet(ModParticles.PURPLE_RUNE.get(), s -> new GlowParticle.Provider(s, 0.55f, 40, 0.0f, true));
-        event.registerSpriteSet(ModParticles.YELLOW_STAR.get(), s -> new GlowParticle.Provider(s, 0.26f, 24, 0.0f, true));
-        event.registerSpriteSet(ModParticles.GREEN_TIME.get(), s -> new GlowParticle.Provider(s, 0.30f, 28, -0.01f, true));
+        // glow sprites: (sprites, size, lifetime, gravity, spin, additive, tint r, g, b)
+        event.registerSpriteSet(ModParticles.GOLD_SPARK.get(), s -> new GlowParticle.Provider(s, 0.20f, 22, 0.0f, false, true, 1f, 1f, 1f));
+        event.registerSpriteSet(ModParticles.GOLD_RUNE.get(), s -> new GlowParticle.Provider(s, 0.55f, 40, 0.0f, true, false, 1f, 1f, 1f));
+        event.registerSpriteSet(ModParticles.SCARLET_SPARK.get(), s -> new GlowParticle.Provider(s, 0.22f, 20, 0.0f, false, true, 1f, 1f, 1f));
+        event.registerSpriteSet(ModParticles.SCARLET_WISP.get(), s -> new GlowParticle.Provider(s, 0.42f, 26, -0.01f, true, false, 1f, 1f, 1f));
+        event.registerSpriteSet(ModParticles.PURPLE_WISP.get(), s -> new GlowParticle.Provider(s, 0.40f, 30, -0.015f, true, false, 1f, 1f, 1f));
+        event.registerSpriteSet(ModParticles.PURPLE_RUNE.get(), s -> new GlowParticle.Provider(s, 0.55f, 40, 0.0f, true, false, 1f, 1f, 1f));
+        event.registerSpriteSet(ModParticles.YELLOW_STAR.get(), s -> new GlowParticle.Provider(s, 0.26f, 24, 0.0f, true, true, 1f, 1f, 1f));
+        event.registerSpriteSet(ModParticles.GREEN_TIME.get(), s -> new GlowParticle.Provider(s, 0.30f, 28, -0.01f, true, false, 1f, 1f, 1f));
+        // streaks: (sprites, size, lifetime, tint r, g, b)
+        event.registerSpriteSet(ModParticles.GOLD_STREAK.get(), s -> new StreakParticle.Provider(s, 0.22f, 14, 1.00f, 0.82f, 0.45f));
+        event.registerSpriteSet(ModParticles.SCARLET_STREAK.get(), s -> new StreakParticle.Provider(s, 0.22f, 14, 1.00f, 0.25f, 0.30f));
+        event.registerSpriteSet(ModParticles.PURPLE_STREAK.get(), s -> new StreakParticle.Provider(s, 0.22f, 15, 0.75f, 0.40f, 1.00f));
+        event.registerSpriteSet(ModParticles.YELLOW_STREAK.get(), s -> new StreakParticle.Provider(s, 0.22f, 14, 1.00f, 0.92f, 0.40f));
+        event.registerSpriteSet(ModParticles.GREEN_STREAK.get(), s -> new StreakParticle.Provider(s, 0.22f, 14, 0.40f, 1.00f, 0.60f));
     }
 
     @SubscribeEvent
