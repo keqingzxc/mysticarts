@@ -83,7 +83,7 @@ public final class FamiliarManager {
             }
             if (level.getGameTime() >= t.expire()) {
                 Vec3 pos = entity.position().add(0, 0.3, 0);
-                MagicUtil.explode(level, pos, MagicUtil.purple(), 14, 0.2);
+                MagicUtil.explode(level, pos, MagicUtil.purple(), 4, 0.15);
                 entity.discard();
                 it.remove();
                 continue;
