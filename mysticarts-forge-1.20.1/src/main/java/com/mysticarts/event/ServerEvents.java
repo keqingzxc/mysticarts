@@ -24,7 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.animal.Cat;
+import com.mysticarts.entity.FamiliarBatEntity;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
@@ -211,8 +211,8 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void onEntityJoin(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide && event.getEntity() instanceof Cat cat
-                && FamiliarManager.shouldRemoveOnJoin(cat, event.getLevel().getGameTime())) {
+        if (!event.getLevel().isClientSide && event.getEntity() instanceof FamiliarBatEntity bat
+                && FamiliarManager.shouldRemoveOnJoin(bat, event.getLevel().getGameTime())) {
             event.setCanceled(true);
         }
     }

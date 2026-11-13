@@ -1,8 +1,9 @@
 package com.mysticarts.magic;
 
+import com.mysticarts.entity.FamiliarBatEntity;
+import com.mysticarts.magic.capability.MagicCapability;
+import com.mysticarts.registry.ModEntities;
 import com.mysticarts.util.MagicUtil;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -10,31 +11,24 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.world.entity.animal.CatVariant;
-import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Summons and runs black-cat familiars (Agatha's school). While a familiar lives it
- * grants its owner night vision and regeneration, and it hexes the nearest hostile mob.
+ * Summons and expires the witch's bat swarm. While bats are alive the owner enjoys "echolocation"
+ * (night vision); each bat dives at the owner's enemies (see {@link FamiliarBatEntity}).
  */
 public final class FamiliarManager {
     private FamiliarManager() {}
 
     public static final String EXPIRE_TAG = "MysticFamiliarExpire";
-    private static final int MAX_PER_PLAYER = 2;
+    private static final int MAX_BATS_PER_PLAYER = 10;
 
     private record Tracked(UUID owner, long expire, ResourceKey<Level> dim) {}
 
@@ -42,34 +36,36 @@ public final class FamiliarManager {
 
     public static boolean summon(ServerPlayer p, ServerLevel level, int lifetimeTicks) {
         long owned = TRACKED.values().stream().filter(t -> t.owner().equals(p.getUUID())).count();
-        if (owned >= MAX_PER_PLAYER) return false;
+        if (owned >= MAX_BATS_PER_PLAYER) return false;
 
-        Cat cat = EntityType.CAT.create(level);
-        if (cat == null) return false;
-        cat.moveTo(p.getX() + p.getRandom().nextDouble() - 0.5, p.getY(), p.getZ() + p.getRandom().nextDouble() - 0.5,
-                p.getYRot(), 0);
-        CatVariant black = BuiltInRegistries.CAT_VARIANT.get(CatVariant.ALL_BLACK);
-        if (black != null) cat.setVariant(black);
-        cat.tame(p);
-        cat.setCollarColor(DyeColor.PURPLE);
-        cat.setCustomName(Component.translatable("entity.mysticarts.familiar"));
-        cat.setPersistenceRequired();
-        cat.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, lifetimeTicks, 1));
-        cat.addEffect(new MobEffectInstance(MobEffects.GLOWING, 40, 0));
+        int magicLevel = MagicCapability.of(p).getLevel();
+        int count = 3 + Math.min(2, magicLevel / 6);
         long expire = level.getGameTime() + lifetimeTicks;
-        cat.getPersistentData().putLong(EXPIRE_TAG, expire);
-        level.addFreshEntity(cat);
-        TRACKED.put(cat.getUUID(), new Tracked(p.getUUID(), expire, level.dimension()));
+        for (int i = 0; i < count; i++) {
+            FamiliarBatEntity bat = new FamiliarBatEntity(ModEntities.FAMILIAR_BAT.get(), level);
+            double a = i * 2 * Math.PI / count;
+            bat.moveTo(p.getX() + Math.cos(a) * 1.2, p.getY() + 1.4, p.getZ() + Math.sin(a) * 1.2, p.getYRot(), 0);
+            bat.setOwner(p);
+            bat.setSlot(i);
+            bat.setBiteDamage(2.0F + magicLevel * 0.25F);
+            if (bat.getAttribute(Attributes.MAX_HEALTH) != null) {
+                bat.getAttribute(Attributes.MAX_HEALTH).setBaseValue(6.0 + magicLevel * 0.5);
+            }
+            bat.setHealth(bat.getMaxHealth());
+            bat.getPersistentData().putLong(EXPIRE_TAG, expire);
+            level.addFreshEntity(bat);
+            TRACKED.put(bat.getUUID(), new Tracked(p.getUUID(), expire, level.dimension()));
+        }
         return true;
     }
 
-    /** Called when a tagged familiar joins a level (e.g. after a restart). True = it should be removed. */
-    public static boolean shouldRemoveOnJoin(Cat cat, long gameTime) {
-        if (!cat.getPersistentData().contains(EXPIRE_TAG)) return false;
-        long expire = cat.getPersistentData().getLong(EXPIRE_TAG);
+    /** Called when a tagged bat joins a level (e.g. after a restart). True = it should be removed. */
+    public static boolean shouldRemoveOnJoin(FamiliarBatEntity bat, long gameTime) {
+        if (!bat.getPersistentData().contains(EXPIRE_TAG)) return false;
+        long expire = bat.getPersistentData().getLong(EXPIRE_TAG);
         if (gameTime >= expire) return true;
-        UUID owner = cat.getOwnerUUID();
-        if (owner != null) TRACKED.putIfAbsent(cat.getUUID(), new Tracked(owner, expire, cat.level().dimension()));
+        UUID owner = bat.getOwnerUUID();
+        if (owner != null) TRACKED.putIfAbsent(bat.getUUID(), new Tracked(owner, expire, bat.level().dimension()));
         return false;
     }
 
@@ -86,32 +82,15 @@ public final class FamiliarManager {
                 continue;
             }
             if (level.getGameTime() >= t.expire()) {
-                Vec3 pos = entity.position().add(0, 0.4, 0);
-                MagicUtil.explode(level, pos, MagicUtil.purple(), 24, 0.25);
-                MagicUtil.helix(level, entity.position(), 1.6, 0.4, MagicUtil.purple(), 2);
+                Vec3 pos = entity.position().add(0, 0.3, 0);
+                MagicUtil.explode(level, pos, MagicUtil.purple(), 14, 0.2);
                 entity.discard();
                 it.remove();
                 continue;
             }
-            // owner perks
             ServerPlayer owner = server.getPlayerList().getPlayer(t.owner());
             if (owner != null && owner.level() == level) {
                 owner.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0, true, false, false));
-                owner.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, true, false, false));
-            }
-            // hex the nearest hostile every 3 seconds
-            if ((level.getGameTime() / 20) % 3 == 0 && entity instanceof Cat cat) {
-                List<Mob> foes = level.getEntitiesOfClass(Mob.class, cat.getBoundingBox().inflate(10),
-                        m -> m instanceof Enemy && m.isAlive());
-                foes.stream().min(Comparator.comparingDouble(m -> m.distanceToSqr(cat))).ifPresent(foe -> {
-                    foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 1));
-                    foe.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0));
-                    foe.addEffect(new MobEffectInstance(MobEffects.GLOWING, 80, 0));
-                    Vec3 from = cat.position().add(0, 0.4, 0);
-                    Vec3 to = foe.position().add(0, foe.getBbHeight() / 2, 0);
-                    MagicUtil.lightning(level, from, to, MagicUtil.purple(), 0.5);
-                    MagicUtil.explode(level, to, MagicUtil.purple(), 8, 0.15);
-                });
             }
         }
     }

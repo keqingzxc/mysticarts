@@ -4,9 +4,11 @@ import com.mysticarts.MysticArts;
 import com.mysticarts.registry.ModEntities;
 import com.mysticarts.registry.ModParticles;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
@@ -25,6 +27,8 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.MANDALA.get(), MandalaRenderer::new);
+        event.<Bat>registerEntityRenderer(ModEntities.FAMILIAR_BAT.get(), FamiliarBatRenderer::new);
+        event.registerEntityRenderer(ModEntities.MIRROR_RIFT.get(), MirrorRiftRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAOS_ORB.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.6F, true));
     }
 
@@ -54,6 +58,11 @@ public class ClientModEvents {
         event.registerSpriteSet(ModParticles.PURPLE_RUNE.get(), s -> new GlowParticle.Provider(s, 0.55f, 40, 0.0f, true));
         event.registerSpriteSet(ModParticles.YELLOW_STAR.get(), s -> new GlowParticle.Provider(s, 0.26f, 24, 0.0f, true));
         event.registerSpriteSet(ModParticles.GREEN_TIME.get(), s -> new GlowParticle.Provider(s, 0.30f, 28, -0.01f, true));
+    }
+
+    @SubscribeEvent
+    public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
+        event.register(MirrorSkyEffects.ID, new MirrorSkyEffects());
     }
 
     @SubscribeEvent

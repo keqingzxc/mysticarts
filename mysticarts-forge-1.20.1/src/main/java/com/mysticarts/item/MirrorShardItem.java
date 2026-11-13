@@ -37,7 +37,7 @@ public class MirrorShardItem extends Item {
             MagicUtil.msg(sp, "not_enough_mana", MANA_COST);
             return InteractionResultHolder.fail(stack);
         }
-        if (!MirrorDimension.toggle(sp, m)) return InteractionResultHolder.fail(stack);
+        if (!MirrorDimension.openRift(sp)) return InteractionResultHolder.fail(stack);
         m.consumeMana(MANA_COST);
         stack.hurtAndBreak(1, sp, p -> p.broadcastBreakEvent(hand));
         sp.getCooldowns().addCooldown(this, 200);

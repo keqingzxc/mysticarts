@@ -119,7 +119,7 @@ public final class SpellEffects {
     }
 
     static boolean mirrorDimension(CastContext c) {
-        return MirrorDimension.toggle(c.player(), c.magic());
+        return MirrorDimension.openRift(c.player());
     }
 
     // =====================================================================
@@ -314,7 +314,8 @@ public final class SpellEffects {
         MagicUtil.helix(level, g, 2.6, 1.2, MagicUtil.purple(), 2.5);
         MagicUtil.explode(level, p.position().add(0, 0.8, 0), MagicUtil.purple(), 28, 0.3);
         sound(level, p.position(), SoundEvents.EVOKER_CAST_SPELL, 1.0f, 0.9f);
-        sound(level, p.position(), SoundEvents.CAT_AMBIENT, 1.0f, 0.7f);
+        sound(level, p.position(), SoundEvents.BAT_TAKEOFF, 1.2f, 0.8f);
+        sound(level, p.position(), SoundEvents.BAT_AMBIENT, 1.0f, 0.6f);
         return true;
     }
 
