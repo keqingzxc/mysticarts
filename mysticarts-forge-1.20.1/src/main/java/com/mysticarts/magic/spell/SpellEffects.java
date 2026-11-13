@@ -310,9 +310,8 @@ public final class SpellEffects {
         int life = 1200 + c.magic().getLevel() * 60;
         if (!FamiliarManager.summon(p, level, life)) return MagicUtil.fail(p, "familiar_limit");
         Vec3 g = p.position().add(0, 0.1, 0);
-        MagicUtil.magicCircle(level, g, 2.4, MagicUtil.purple(), MagicUtil.purpleRune(), 0.0);
-        MagicUtil.helix(level, g, 2.6, 1.2, MagicUtil.purple(), 2.5);
-        MagicUtil.explode(level, p.position().add(0, 0.8, 0), MagicUtil.purple(), 28, 0.3);
+        MagicUtil.magicCircle(level, g, 1.6, MagicUtil.purple(), MagicUtil.purpleRune(), 0.0);
+        MagicUtil.explode(level, p.position().add(0, 0.8, 0), MagicUtil.purple(), 10, 0.25);
         sound(level, p.position(), SoundEvents.EVOKER_CAST_SPELL, 1.0f, 0.9f);
         sound(level, p.position(), SoundEvents.BAT_TAKEOFF, 1.2f, 0.8f);
         sound(level, p.position(), SoundEvents.BAT_AMBIENT, 1.0f, 0.6f);
