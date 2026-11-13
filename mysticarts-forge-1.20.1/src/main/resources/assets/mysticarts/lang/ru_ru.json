@@ -32,7 +32,7 @@
   "spell.mysticarts.life_drain": "Поглощение жизни",
   "spell.mysticarts.hex_curse": "Порча",
   "spell.mysticarts.coven_circle": "Круг ковена",
-  "spell.mysticarts.familiar": "Призыв фамильяра",
+  "spell.mysticarts.familiar": "Стая летучих мышей",
   "spell.mysticarts.hex_bolt": "Ведьмин заряд",
   "spell.mysticarts.wiccan_dash": "Полёт Виккана",
   "spell.mysticarts.telepathy": "Телепатия",
@@ -85,9 +85,11 @@
   "item.mysticarts.heartstone": "Сердце-камень",
   "entity.mysticarts.chaos_orb": "Сфера хаоса",
   "tooltip.mysticarts.focus": "В руке при заклинаниях школы «%s»: +25% силы, −15% маны.",
-  "tooltip.mysticarts.mirror_shard": "Вход и выход из Измерения Зеркала (40 маны, 6 использований).",
+  "tooltip.mysticarts.mirror_shard": "Разбивает воздух в разлом из зеркал. Пройдите сквозь него, чтобы войти в Измерение Зеркала или выйти (40 маны, 6 использований).",
   "tooltip.mysticarts.chaos_orb": "Бросьте: алый взрыв, который жжёт и отбрасывает врагов.",
   "tooltip.mysticarts.brew": "Восстанавливает ману, лечит и ослабляет Порчу.",
   "tooltip.mysticarts.heartstone": "Лечит вас и союзников в радиусе 8 блоков (30 маны).",
-  "message.mysticarts.no_mana_item": "Недостаточно маны (нужно %s)"
+  "message.mysticarts.no_mana_item": "Недостаточно маны (нужно %s)",
+  "entity.mysticarts.familiar_bat": "Ведьмина летучая мышь",
+  "entity.mysticarts.mirror_rift": "Зеркальный разлом"
 }

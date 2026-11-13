@@ -32,7 +32,7 @@
   "spell.mysticarts.life_drain": "Life Drain",
   "spell.mysticarts.hex_curse": "Hex Curse",
   "spell.mysticarts.coven_circle": "Coven Circle",
-  "spell.mysticarts.familiar": "Summon Familiar",
+  "spell.mysticarts.familiar": "Bat Swarm",
   "spell.mysticarts.hex_bolt": "Hex Bolt",
   "spell.mysticarts.wiccan_dash": "Wiccan Flight",
   "spell.mysticarts.telepathy": "Telepathy",
@@ -85,9 +85,11 @@
   "item.mysticarts.heartstone": "Heartstone",
   "entity.mysticarts.chaos_orb": "Chaos Orb",
   "tooltip.mysticarts.focus": "Hold while casting %s spells: +25% power, -15% mana cost.",
-  "tooltip.mysticarts.mirror_shard": "Use to enter or leave the Mirror Dimension (40 mana, 6 uses).",
+  "tooltip.mysticarts.mirror_shard": "Shatters the air into a rift of mirrors. Walk through it to enter or leave the Mirror Dimension (40 mana, 6 uses).",
   "tooltip.mysticarts.chaos_orb": "Throw it: a scarlet explosion that burns and hurls enemies away.",
   "tooltip.mysticarts.brew": "Restores mana, regenerates health and eases corruption.",
   "tooltip.mysticarts.heartstone": "Heals you and allies within 8 blocks (30 mana).",
-  "message.mysticarts.no_mana_item": "Not enough mana (%s needed)"
+  "message.mysticarts.no_mana_item": "Not enough mana (%s needed)",
+  "entity.mysticarts.familiar_bat": "Witch Bat",
+  "entity.mysticarts.mirror_rift": "Mirror Rift"
 }
