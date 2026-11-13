@@ -55,6 +55,24 @@ public final class MagicUtil {
         };
     }
 
+    // ---------- density / streaks ----------
+    /** Global effect density (1.0 = everything). Lower means less visual noise. */
+    private static final double DENSITY = 0.6;
+
+    private static int scaled(int count) {
+        return Math.max(1, (int) Math.round(count * DENSITY));
+    }
+
+    /** The stretched "streak" variant of a glow particle, used for anything that flies. */
+    public static ParticleOptions streakOf(ParticleOptions p) {
+        if (p == ModParticles.GOLD_SPARK.get() || p == ModParticles.GOLD_RUNE.get()) return ModParticles.GOLD_STREAK.get();
+        if (p == ModParticles.SCARLET_SPARK.get() || p == ModParticles.SCARLET_WISP.get()) return ModParticles.SCARLET_STREAK.get();
+        if (p == ModParticles.PURPLE_WISP.get() || p == ModParticles.PURPLE_RUNE.get()) return ModParticles.PURPLE_STREAK.get();
+        if (p == ModParticles.YELLOW_STAR.get()) return ModParticles.YELLOW_STREAK.get();
+        if (p == ModParticles.GREEN_TIME.get()) return ModParticles.GREEN_STREAK.get();
+        return p;
+    }
+
     // ---------- messages ----------
     public static void msg(ServerPlayer p, String key, Object... args) {
         p.displayClientMessage(Component.translatable("message.mysticarts." + key, args), true);
@@ -131,19 +149,25 @@ public final class MagicUtil {
 
     /** Outward-flying ring: a shockwave. */
     public static void shockwave(ServerLevel l, Vec3 c, ParticleOptions p, double speed, int points) {
-        for (int i = 0; i < points; i++) {
-            double a = 2 * Math.PI * i / points;
-            emit(l, p, c, new Vec3(Math.cos(a) * speed, 0.0, Math.sin(a) * speed));
+        int n = Math.max(10, scaled(points));
+        ParticleOptions streak = streakOf(p);
+        for (int i = 0; i < n; i++) {
+            double a = 2 * Math.PI * i / n;
+            emit(l, streak, c, new Vec3(Math.cos(a) * speed, 0.0, Math.sin(a) * speed));
         }
     }
 
     /** Random radial burst. */
     public static void explode(ServerLevel l, Vec3 c, ParticleOptions p, int count, double speed) {
         RandomSource r = l.getRandom();
-        for (int i = 0; i < count; i++) {
+        ParticleOptions streak = streakOf(p);
+        int n = scaled(count);
+        for (int i = 0; i < n; i++) {
             Vec3 d = new Vec3(r.nextGaussian(), r.nextGaussian(), r.nextGaussian());
             if (d.lengthSqr() < 1.0E-6) continue;
-            emit(l, p, c, d.normalize().scale(speed * (0.35 + 0.65 * r.nextDouble())));
+            // mostly streaks (rays), with some still sparks for variety
+            ParticleOptions use = (i % 3 == 2) ? p : streak;
+            emit(l, use, c, d.normalize().scale(speed * (0.35 + 0.65 * r.nextDouble())));
         }
     }
 
@@ -154,8 +178,9 @@ public final class MagicUtil {
 
     /** Horizontal ring that slowly swirls. */
     public static void swirlRing(ServerLevel l, Vec3 c, double radius, int points, ParticleOptions p, double tangential) {
-        for (int i = 0; i < points; i++) {
-            double a = 2 * Math.PI * i / points;
+        int n = Math.max(8, scaled(points));
+        for (int i = 0; i < n; i++) {
+            double a = 2 * Math.PI * i / n;
             Vec3 pos = c.add(Math.cos(a) * radius, 0, Math.sin(a) * radius);
             emit(l, p, pos, new Vec3(-Math.sin(a) * tangential, 0.01, Math.cos(a) * tangential));
         }
@@ -172,8 +197,9 @@ public final class MagicUtil {
         Vec3 up = Math.abs(n.y) > 0.95 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0);
         Vec3 u = n.cross(up).normalize();
         Vec3 v = n.cross(u).normalize();
-        for (int i = 0; i < points; i++) {
-            double a = 2 * Math.PI * i / points;
+        int pts = Math.max(10, (int) Math.round(points * 0.75));
+        for (int i = 0; i < pts; i++) {
+            double a = 2 * Math.PI * i / pts;
             Vec3 radial = u.scale(Math.cos(a)).add(v.scale(Math.sin(a)));
             Vec3 tangent = u.scale(-Math.sin(a)).add(v.scale(Math.cos(a)));
             emit(l, p, c.add(radial.scale(radius)), tangent.scale(0.10));
@@ -182,7 +208,7 @@ public final class MagicUtil {
 
     /** Flat ground sigil: outer ring, hexagram and runes. */
     public static void magicCircle(ServerLevel l, Vec3 c, double radius, ParticleOptions p, ParticleOptions rune, double rot) {
-        int n = Math.max(28, (int) (radius * 16));
+        int n = Math.max(20, (int) (radius * 10));
         for (int i = 0; i < n; i++) {
             double a = 2 * Math.PI * i / n;
             dot(l, p, c.add(Math.cos(a) * radius, 0, Math.sin(a) * radius));
@@ -197,7 +223,7 @@ public final class MagicUtil {
             for (int e = 0; e < 3; e++) {
                 Vec3 from = hex[(tri + e * 2) % 6];
                 Vec3 to = hex[(tri + (e + 1) * 2) % 6];
-                int steps = Math.max(4, (int) (from.distanceTo(to) / 0.5));
+                int steps = Math.max(3, (int) (from.distanceTo(to) / 0.75));
                 for (int s = 0; s <= steps; s++) dot(l, p, from.add(to.subtract(from).scale(s / (double) steps)));
             }
         }
@@ -210,7 +236,7 @@ public final class MagicUtil {
 
     /** Rising spiral column. */
     public static void helix(ServerLevel l, Vec3 base, double height, double radius, ParticleOptions p, double turns) {
-        int steps = Math.max(10, (int) (height * 10));
+        int steps = Math.max(8, (int) (height * 6));
         for (int i = 0; i < steps; i++) {
             double t = i / (double) steps;
             double a = t * turns * 2 * Math.PI;
@@ -223,9 +249,9 @@ public final class MagicUtil {
         Vec3 delta = to.subtract(from);
         double len = delta.length();
         if (len < 0.1) return;
-        Vec3 step = delta.normalize().scale(0.3);
+        Vec3 step = delta.normalize().scale(0.45);
         Vec3 pos = from;
-        for (double d = 0; d < len; d += 0.3) {
+        for (double d = 0; d < len; d += 0.45) {
             dot(l, p, pos);
             pos = pos.add(step);
         }
@@ -254,6 +280,7 @@ public final class MagicUtil {
         double len = delta.length();
         if (len < 0.2) return;
         Vec3 dir = delta.normalize();
-        for (double t = 0; t < len; t += 0.6) emit(l, p, from.add(dir.scale(t)), dir.scale(speed));
+        ParticleOptions streak = streakOf(p);
+        for (double t = 0; t < len; t += 0.9) emit(l, streak, from.add(dir.scale(t)), dir.scale(speed));
     }
 }
