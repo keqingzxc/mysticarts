@@ -23,4 +23,11 @@ public class ModParticles {
     public static final RegistryObject<SimpleParticleType> PURPLE_RUNE = reg("purple_rune");
     public static final RegistryObject<SimpleParticleType> YELLOW_STAR = reg("yellow_star");
     public static final RegistryObject<SimpleParticleType> GREEN_TIME = reg("green_time");
+
+    // elongated "streak" variants, used for shockwaves, bursts and energy streams
+    public static final RegistryObject<SimpleParticleType> GOLD_STREAK = reg("gold_streak");
+    public static final RegistryObject<SimpleParticleType> SCARLET_STREAK = reg("scarlet_streak");
+    public static final RegistryObject<SimpleParticleType> PURPLE_STREAK = reg("purple_streak");
+    public static final RegistryObject<SimpleParticleType> YELLOW_STREAK = reg("yellow_streak");
+    public static final RegistryObject<SimpleParticleType> GREEN_STREAK = reg("green_streak");
 }
