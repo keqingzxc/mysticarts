@@ -103,8 +103,9 @@ public class FamiliarBatEntity extends Bat {
             this.yBodyRot = getYRot();
         }
 
-        if (tickCount % 3 == 0 && level() instanceof ServerLevel sl) {
-            sl.sendParticles(MagicUtil.purple(), getX(), getY() + 0.3, getZ(), 1, 0.12, 0.12, 0.12, 0.0);
+        // a faint trail only while diving at a target; idle bats are silent
+        if (target != null && tickCount % 6 == 0 && level() instanceof ServerLevel sl) {
+            sl.sendParticles(MagicUtil.purple(), getX(), getY() + 0.3, getZ(), 1, 0.05, 0.05, 0.05, 0.0);
         }
     }
 
@@ -148,7 +149,7 @@ public class FamiliarBatEntity extends Bat {
         biteCooldown = 12;
         if (level() instanceof ServerLevel sl) {
             Vec3 mid = target.position().add(0, target.getBbHeight() * 0.6, 0);
-            MagicUtil.explode(sl, mid, MagicUtil.purple(), 6, 0.18);
+            MagicUtil.explode(sl, mid, MagicUtil.purple(), 3, 0.12);
             sl.playSound(null, getX(), getY(), getZ(), SoundEvents.BAT_HURT, SoundSource.NEUTRAL, 0.4F, 1.6F);
         }
     }
