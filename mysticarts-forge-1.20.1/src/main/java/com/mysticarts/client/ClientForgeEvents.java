@@ -16,10 +16,12 @@ public class ClientForgeEvents {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
+        ClientFx.tick();
         if (mc.player == null || mc.screen != null) return;
 
         while (ModKeys.CAST.consumeClick()) ModNetwork.sendToServer(new CastSpellPacket());
         while (ModKeys.NEXT.consumeClick()) ModNetwork.sendToServer(new CycleSpellPacket(1));
+        while (ModKeys.SKILLS.consumeClick()) SkillScreen.open();
         while (ModKeys.PREV.consumeClick()) ModNetwork.sendToServer(new CycleSpellPacket(-1));
     }
 }
