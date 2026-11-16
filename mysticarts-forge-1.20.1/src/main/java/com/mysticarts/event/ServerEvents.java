@@ -9,6 +9,7 @@ import com.mysticarts.magic.PlayerMagic;
 import com.mysticarts.magic.TimeHistory;
 import com.mysticarts.magic.capability.MagicCapability;
 import com.mysticarts.magic.capability.PlayerMagicProvider;
+import com.mysticarts.magic.skill.Skills;
 import com.mysticarts.registry.ModItems;
 import com.mysticarts.util.MagicUtil;
 import net.minecraft.network.chat.Component;
@@ -116,7 +117,7 @@ public class ServerEvents {
         if (m.getSchool() == MagicSchool.NONE) return;
 
         if (t % 20 == 0) {
-            int regen = 1 + m.getLevel() / 4;
+            int regen = 1 + m.getLevel() / 4 + Skills.regenBonus(m);
             if (MirrorDimension.isIn(p)) regen *= 2;
             if (m.getCorruption() > 60) regen = Math.max(0, regen - 1);
             m.addMana(regen);
