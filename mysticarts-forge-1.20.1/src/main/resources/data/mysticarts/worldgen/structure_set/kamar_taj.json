@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "mysticarts:kamar_taj",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 48,
+    "separation": 20,
+    "salt": 3319071
+  }
+}
