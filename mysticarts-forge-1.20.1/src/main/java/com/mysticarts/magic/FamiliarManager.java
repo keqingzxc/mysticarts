@@ -34,12 +34,12 @@ public final class FamiliarManager {
 
     private static final Map<UUID, Tracked> TRACKED = new HashMap<>();
 
-    public static boolean summon(ServerPlayer p, ServerLevel level, int lifetimeTicks) {
+    public static boolean summon(ServerPlayer p, ServerLevel level, int lifetimeTicks, int extraBats) {
         long owned = TRACKED.values().stream().filter(t -> t.owner().equals(p.getUUID())).count();
         if (owned >= MAX_BATS_PER_PLAYER) return false;
 
         int magicLevel = MagicCapability.of(p).getLevel();
-        int count = 3 + Math.min(2, magicLevel / 6);
+        int count = 3 + Math.min(2, magicLevel / 6) + extraBats;
         long expire = level.getGameTime() + lifetimeTicks;
         for (int i = 0; i < count; i++) {
             FamiliarBatEntity bat = new FamiliarBatEntity(ModEntities.FAMILIAR_BAT.get(), level);

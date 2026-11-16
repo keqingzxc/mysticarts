@@ -38,6 +38,11 @@ public final class MirrorDimension {
 
     /** Conjures the rift 3 blocks in front of the player. */
     public static boolean openRift(ServerPlayer p) {
+        return openRift(p, 1.0f);
+    }
+
+    /** @param power skill-tree scaling of how long the rift stays open */
+    public static boolean openRift(ServerPlayer p, float power) {
         ServerLevel level = p.serverLevel();
         if (!isIn(p) && p.server.getLevel(KEY) == null) return MagicUtil.fail(p, "mirror_unavailable");
 
@@ -59,7 +64,7 @@ public final class MirrorDimension {
         rift.setYRot(p.getYRot());
         rift.yRotO = p.getYRot();
         rift.setOwner(p);
-        rift.setLifetime(240);
+        rift.setLifetime((int) (240 * power));
         level.addFreshEntity(rift);
 
         Vec3 center = pos.add(0, 1.8, 0);

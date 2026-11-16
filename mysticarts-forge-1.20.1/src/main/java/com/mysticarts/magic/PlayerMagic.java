@@ -1,5 +1,6 @@
 package com.mysticarts.magic;
 
+import com.mysticarts.magic.skill.Skills;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
@@ -26,6 +27,7 @@ public class PlayerMagic {
     private boolean cloakFlight;
     private boolean dirty = true;
     private final Map<String, Long> cooldowns = new HashMap<>();
+    private final Map<String, Integer> skills = new HashMap<>();
 
     // ---- school / progression ----
     public MagicSchool getSchool() { return school; }
@@ -50,7 +52,15 @@ public class PlayerMagic {
         return up;
     }
 
+    // ---- skills ----
+    public Map<String, Integer> getSkills() { return skills; }
+    public int getRank(String id) { return skills.getOrDefault(id, 0); }
+    public void setRank(String id, int rank) { if (rank <= 0) skills.remove(id); else skills.put(id, rank); dirty = true; }
+    public void clearSkills() { skills.clear(); dirty = true; }
+    public int getSkillPoints() { return Math.max(0, level - Skills.spent(this)); }
+
     public void resetProgress() {
+        skills.clear();
         level = 0;
         xp = 0;
         corruption = 0;
@@ -59,7 +69,7 @@ public class PlayerMagic {
     }
 
     // ---- mana ----
-    public int getMaxMana() { return school == MagicSchool.NONE ? 0 : 100 + 15 * level; }
+    public int getMaxMana() { return school == MagicSchool.NONE ? 0 : 100 + 15 * level + Skills.maxManaBonus(this); }
     public int getMana() { return mana; }
     public void setMana(int v) { mana = Mth.clamp(v, 0, getMaxMana()); dirty = true; }
     public void addMana(int v) { setMana(mana + v); }
@@ -113,6 +123,7 @@ public class PlayerMagic {
     public void copyFrom(PlayerMagic o) {
         school = o.school; mana = o.mana; level = o.level; xp = o.xp; corruption = o.corruption;
         selectedSpell = o.selectedSpell; altarReadyAt = o.altarReadyAt;
+        skills.clear(); skills.putAll(o.skills);
         hasOrigin = o.hasOrigin; originDim = o.originDim; originX = o.originX; originY = o.originY; originZ = o.originZ;
         dirty = true;
     }
@@ -131,6 +142,9 @@ public class PlayerMagic {
         t.putDouble("OriginX", originX);
         t.putDouble("OriginY", originY);
         t.putDouble("OriginZ", originZ);
+        CompoundTag sk = new CompoundTag();
+        for (Map.Entry<String, Integer> e : skills.entrySet()) sk.putInt(e.getKey(), e.getValue());
+        t.put("Skills", sk);
         return t;
     }
 
@@ -147,6 +161,9 @@ public class PlayerMagic {
         originX = t.getDouble("OriginX");
         originY = t.getDouble("OriginY");
         originZ = t.getDouble("OriginZ");
+        skills.clear();
+        CompoundTag sk = t.getCompound("Skills");
+        for (String k : sk.getAllKeys()) skills.put(k, sk.getInt(k));
         mana = Mth.clamp(t.getInt("Mana"), 0, getMaxMana());
         dirty = true;
     }
