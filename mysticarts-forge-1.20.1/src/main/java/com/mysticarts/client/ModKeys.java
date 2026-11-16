@@ -8,5 +8,6 @@ public class ModKeys {
 
     public static final KeyMapping CAST = new KeyMapping("key.mysticarts.cast", InputConstants.KEY_R, CATEGORY);
     public static final KeyMapping NEXT = new KeyMapping("key.mysticarts.next_spell", InputConstants.KEY_V, CATEGORY);
+    public static final KeyMapping SKILLS = new KeyMapping("key.mysticarts.skills", InputConstants.KEY_K, CATEGORY);
     public static final KeyMapping PREV = new KeyMapping("key.mysticarts.prev_spell", InputConstants.KEY_C, CATEGORY);
 }

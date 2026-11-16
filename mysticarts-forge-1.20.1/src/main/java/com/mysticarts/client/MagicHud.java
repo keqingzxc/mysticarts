@@ -3,6 +3,7 @@ package com.mysticarts.client;
 import com.mysticarts.magic.MagicSchool;
 import com.mysticarts.magic.PlayerMagic;
 import com.mysticarts.magic.capability.MagicCapability;
+import com.mysticarts.magic.skill.Skills;
 import com.mysticarts.magic.spell.Spell;
 import com.mysticarts.magic.spell.SpellCaster;
 import net.minecraft.client.Minecraft;
@@ -44,8 +45,14 @@ public class MagicHud {
             Spell spell = SpellCaster.selected(m);
             if (spell != null) {
                 boolean locked = m.getLevel() < spell.minLevel();
-                Component line = Component.translatable("hud.mysticarts.spell", spell.displayName(), spell.manaCost());
+                int shownCost = Math.max(1, (int) Math.round(spell.manaCost() * Skills.costFactor(m, spell)));
+                Component line = Component.translatable("hud.mysticarts.spell", spell.displayName(), shownCost);
                 g.drawString(mc.font, line, x, y + 18, locked ? 0xFF777777 : m.getSchool().getColor() | 0xFF000000, true);
+            }
+
+            if (m.getSkillPoints() > 0) {
+                g.drawString(mc.font, Component.translatable("hud.mysticarts.skill_points", m.getSkillPoints()),
+                        x, y + 29, 0xFFFFD34D, true);
             }
         });
     };

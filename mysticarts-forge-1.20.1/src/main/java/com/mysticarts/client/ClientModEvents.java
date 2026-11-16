@@ -22,6 +22,7 @@ public class ClientModEvents {
         event.register(ModKeys.CAST);
         event.register(ModKeys.NEXT);
         event.register(ModKeys.PREV);
+        event.register(ModKeys.SKILLS);
     }
 
     @SubscribeEvent
