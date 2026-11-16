@@ -5,6 +5,7 @@ import com.mysticarts.entity.FamiliarBatEntity;
 import com.mysticarts.entity.MandalaEntity;
 import com.mysticarts.entity.MirrorRiftEntity;
 import com.mysticarts.registry.ModParticles;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 /** Continuous particles of entities. They are drawn on the client only, so they cost no network traffic. */
@@ -33,12 +34,13 @@ public final class EntityFx {
         Vec3 forward = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
         Vec3 right = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
         Vec3 center = e.position().add(0, e.getBbHeight() / 2.0, 0);
+        RandomSource rnd = e.level().random; // plain entities have no public getRandom() in 1.20.1
         for (int i = 0; i < count; i++) {
-            double a = e.getRandom().nextDouble() * Math.PI * 2;
-            double r = 0.4 + e.getRandom().nextDouble() * 1.4;
+            double a = rnd.nextDouble() * Math.PI * 2;
+            double r = 0.4 + rnd.nextDouble() * 1.4;
             Vec3 p = center.add(right.scale(Math.cos(a) * r)).add(0, Math.sin(a) * r, 0)
-                    .add(forward.scale((e.getRandom().nextDouble() - 0.5) * 0.6));
-            e.level().addParticle(e.getRandom().nextBoolean() ? ModParticles.GOLD_SPARK.get() : ModParticles.YELLOW_STAR.get(),
+                    .add(forward.scale((rnd.nextDouble() - 0.5) * 0.6));
+            e.level().addParticle(rnd.nextBoolean() ? ModParticles.GOLD_SPARK.get() : ModParticles.YELLOW_STAR.get(),
                     p.x, p.y, p.z, 0, 0.01, 0);
         }
     }
