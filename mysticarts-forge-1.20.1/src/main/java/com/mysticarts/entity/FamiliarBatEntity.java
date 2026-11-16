@@ -1,5 +1,6 @@
 package com.mysticarts.entity;
 
+import com.mysticarts.client.EntityFx;
 import com.mysticarts.util.MagicUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -56,6 +57,12 @@ public class FamiliarBatEntity extends Bat {
         return ownerUUID == null ? null : level().getPlayerByUUID(ownerUUID);
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (level().isClientSide) EntityFx.batTrail(this);
+    }
+
     // ------------------------------------------------------------------ AI
     @Override
     protected void customServerAiStep() {
@@ -101,11 +108,6 @@ public class FamiliarBatEntity extends Bat {
             setYRot(getYRot() + Mth.clamp(Mth.wrapDegrees(yaw - getYRot()), -30.0F, 30.0F));
             this.yHeadRot = getYRot();
             this.yBodyRot = getYRot();
-        }
-
-        // a faint trail only while diving at a target; idle bats are silent
-        if (target != null && tickCount % 6 == 0 && level() instanceof ServerLevel sl) {
-            sl.sendParticles(MagicUtil.purple(), getX(), getY() + 0.3, getZ(), 1, 0.05, 0.05, 0.05, 0.0);
         }
     }
 

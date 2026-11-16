@@ -1,6 +1,7 @@
 package com.mysticarts.entity;
 
-import com.mysticarts.registry.ModParticles;
+import com.mysticarts.client.EntityFx;
+import com.mysticarts.util.MagicUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -59,7 +60,10 @@ public class MandalaEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) return;
+        if (level().isClientSide) {
+            EntityFx.mandala(this);
+            return;
+        }
 
         Player owner = getOwner();
         if (owner == null || !owner.isAlive() || tickCount > lifetime) {
@@ -81,7 +85,7 @@ public class MandalaEntity extends Entity {
                 proj.setOwner(owner);
                 proj.hurtMarked = true;
             }
-            sl.sendParticles(ModParticles.GOLD_SPARK.get(), proj.getX(), proj.getY(), proj.getZ(), 8, 0.2, 0.2, 0.2, 0.1);
+            MagicUtil.explode(sl, proj.position(), MagicUtil.gold(), 6, 0.2);
         }
 
         for (Entity e : sl.getEntities(this, box, ent -> ent instanceof LivingEntity && !(ent instanceof Player))) {
@@ -91,17 +95,6 @@ public class MandalaEntity extends Entity {
             away = away.normalize().scale(0.3);
             e.push(away.x, 0.05, away.z);
             e.hurtMarked = true;
-        }
-
-        if (tickCount % 2 == 0) {
-            double yaw = Math.toRadians(getYRot());
-            Vec3 right = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
-            Vec3 center = position().add(0, getBbHeight() / 2.0, 0);
-            for (int i = 0; i < 16; i++) {
-                double a = 2 * Math.PI * i / 16 + tickCount * 0.12;
-                Vec3 pt = center.add(right.scale(Math.cos(a) * 1.15)).add(0, Math.sin(a) * 1.15, 0);
-                sl.sendParticles(ModParticles.GOLD_SPARK.get(), pt.x, pt.y, pt.z, 1, 0, 0, 0, 0);
-            }
         }
     }
 

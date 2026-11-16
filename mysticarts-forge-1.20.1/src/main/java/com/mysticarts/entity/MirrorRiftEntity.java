@@ -1,7 +1,7 @@
 package com.mysticarts.entity;
 
 import com.mysticarts.magic.MirrorDimension;
-import com.mysticarts.registry.ModParticles;
+import com.mysticarts.client.EntityFx;
 import com.mysticarts.util.MagicUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -53,7 +53,10 @@ public class MirrorRiftEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) return;
+        if (level().isClientSide) {
+            EntityFx.rift(this);
+            return;
+        }
         ServerLevel sl = (ServerLevel) level();
 
         if (tickCount > getLifetime()) {
@@ -69,14 +72,6 @@ public class MirrorRiftEntity extends Entity {
         Vec3 right = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
         Vec3 center = position().add(0, getBbHeight() / 2, 0);
 
-        if (tickCount % 3 == 0) {
-            double a = random.nextDouble() * Math.PI * 2;
-            double r = 0.4 + random.nextDouble() * 1.4;
-            Vec3 p = center.add(right.scale(Math.cos(a) * r)).add(0, Math.sin(a) * r, 0)
-                    .add(forward.scale((random.nextDouble() - 0.5) * 0.6));
-            sl.sendParticles(random.nextBoolean() ? ModParticles.GOLD_SPARK.get() : ModParticles.YELLOW_STAR.get(),
-                    p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.0);
-        }
         if (tickCount % 40 == 5) {
             sl.playSound(null, center.x, center.y, center.z, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.6f, 0.6f);
         }
