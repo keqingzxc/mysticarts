@@ -7,12 +7,20 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLES =
             DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, MysticArts.MODID);
 
+    /** All particle types in registration order; the index is the id used in network packets. */
+    public static final List<RegistryObject<SimpleParticleType>> ALL = new ArrayList<>();
+
     private static RegistryObject<SimpleParticleType> reg(String name) {
-        return PARTICLES.register(name, () -> new SimpleParticleType(false));
+        RegistryObject<SimpleParticleType> o = PARTICLES.register(name, () -> new SimpleParticleType(false));
+        ALL.add(o);
+        return o;
     }
 
     public static final RegistryObject<SimpleParticleType> GOLD_SPARK = reg("gold_spark");
