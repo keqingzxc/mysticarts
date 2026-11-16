@@ -5,6 +5,7 @@ import com.mysticarts.magic.MagicSync;
 import com.mysticarts.magic.PlayerMagic;
 import com.mysticarts.magic.capability.MagicCapability;
 import com.mysticarts.item.FocusItem;
+import com.mysticarts.magic.skill.Skills;
 import com.mysticarts.magic.spell.Spell.CastContext;
 import com.mysticarts.util.MagicUtil;
 import net.minecraft.network.chat.Component;
@@ -34,8 +35,9 @@ public final class SpellCaster {
         MagicSync.sync(p);
     }
 
-    public static float power(ServerPlayer p, PlayerMagic m) {
+    public static float power(ServerPlayer p, PlayerMagic m, Spell spell) {
         float power = 1.0f + m.getLevel() * 0.05f;
+        power *= Skills.spellPower(m, spell);
         if (m.getSchool() == MagicSchool.CHAOS) {
             power *= 1.0f + m.getCorruption() / 200.0f; // corruption feeds chaos power...
         }
@@ -50,10 +52,9 @@ public final class SpellCaster {
     }
 
     public static int effectiveCost(ServerPlayer p, PlayerMagic m, Spell spell) {
-        if (FocusItem.isHolding(p, m.getSchool())) {
-            return Math.max(1, Math.round(spell.manaCost() * FocusItem.COST_FACTOR));
-        }
-        return spell.manaCost();
+        float cost = spell.manaCost() * (float) Skills.costFactor(m, spell);
+        if (FocusItem.isHolding(p, m.getSchool())) cost *= FocusItem.COST_FACTOR;
+        return Math.max(1, Math.round(cost));
     }
 
     public static void cast(ServerPlayer p) {
@@ -83,7 +84,7 @@ public final class SpellCaster {
         }
 
         // Chaos magic is unstable: the more corruption, the higher the backfire chance.
-        if (m.getSchool() == MagicSchool.CHAOS && p.getRandom().nextFloat() < m.getCorruption() / 250.0f) {
+        if (m.getSchool() == MagicSchool.CHAOS && p.getRandom().nextFloat() < m.getCorruption() / 250.0f * (float) Skills.fizzleFactor(m)) {
             m.consumeMana(cost / 2);
             m.setCooldown(spell.id(), now + 20);
             p.hurt(p.damageSources().magic(), 2.0f);
@@ -93,12 +94,12 @@ public final class SpellCaster {
             return;
         }
 
-        CastContext ctx = new CastContext(p, level, m, power(p, m));
+        CastContext ctx = new CastContext(p, level, m, power(p, m, spell));
         if (!spell.effect().cast(ctx)) return;
 
         m.consumeMana(cost);
-        m.setCooldown(spell.id(), now + spell.cooldown());
-        m.addCorruption(spell.corruption());
+        m.setCooldown(spell.id(), now + Math.round(spell.cooldown() * (float) Skills.cooldownFactor(m, spell)));
+        m.addCorruption(Math.round(spell.corruption() * (float) Skills.corruptionFactor(m)));
         boolean levelUp = m.addXp(cost / 5 + 1);
         if (levelUp) {
             p.sendSystemMessage(Component.translatable("message.mysticarts.level_up", m.getLevel())

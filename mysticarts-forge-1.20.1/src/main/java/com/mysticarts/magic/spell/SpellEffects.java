@@ -56,7 +56,7 @@ public final class SpellEffects {
         }
         MandalaEntity mandala = new MandalaEntity(ModEntities.MANDALA.get(), level);
         mandala.setOwner(p);
-        mandala.setLifetime(100 + c.magic().getLevel() * 10);
+        mandala.setLifetime((int) ((100 + c.magic().getLevel() * 10) * Math.min(2.0f, c.power())));
         mandala.followOwner();
         level.addFreshEntity(mandala);
 
@@ -75,7 +75,7 @@ public final class SpellEffects {
         ServerLevel level = c.level();
         Vec3 look = p.getLookAngle();
         Vec3 eye = p.getEyePosition();
-        double max = MagicUtil.clipDistance(p, 18 + c.magic().getLevel());
+        double max = MagicUtil.clipDistance(p, (18 + c.magic().getLevel()) * Math.min(1.8f, c.power()));
         for (double d = max; d >= 2.0; d -= 1.0) {
             Vec3 dest = eye.add(look.scale(d)).subtract(0, p.getEyeHeight(), 0);
             AABB box = p.getBoundingBox().move(dest.subtract(p.position()));
@@ -103,7 +103,7 @@ public final class SpellEffects {
         Optional<LivingEntity> target = MagicUtil.targetEntity(p, 20);
         if (target.isEmpty()) return MagicUtil.fail(p, "no_target");
         LivingEntity t = target.get();
-        int dur = 100 + c.magic().getLevel() * 10;
+        int dur = (int) ((100 + c.magic().getLevel() * 10) * Math.min(2.0f, c.power()));
         t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, dur, 9));
         t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, dur, 2));
         t.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, dur, 2));
@@ -119,7 +119,7 @@ public final class SpellEffects {
     }
 
     static boolean mirrorDimension(CastContext c) {
-        return MirrorDimension.openRift(c.player());
+        return MirrorDimension.openRift(c.player(), Math.min(2.0f, c.power()));
     }
 
     // =====================================================================
@@ -256,7 +256,7 @@ public final class SpellEffects {
         ServerPlayer p = c.player();
         ServerLevel level = c.level();
         Vec3 center = MagicUtil.beamEnd(p, 20);
-        List<LivingEntity> targets = MagicUtil.nearby(p, center, 5);
+        List<LivingEntity> targets = MagicUtil.nearby(p, center, 5 * Math.min(1.6f, c.power()));
         if (targets.isEmpty()) return MagicUtil.fail(p, "no_target");
         for (LivingEntity e : targets) {
             e.addEffect(new MobEffectInstance(MobEffects.WITHER, 120, 0));
@@ -307,8 +307,8 @@ public final class SpellEffects {
     static boolean familiar(CastContext c) {
         ServerPlayer p = c.player();
         ServerLevel level = c.level();
-        int life = 1200 + c.magic().getLevel() * 60;
-        if (!FamiliarManager.summon(p, level, life)) return MagicUtil.fail(p, "familiar_limit");
+        int life = (int) ((1200 + c.magic().getLevel() * 60) * Math.min(2.0f, c.power()));
+        if (!FamiliarManager.summon(p, level, life, c.power() >= 1.5f ? 1 : 0)) return MagicUtil.fail(p, "familiar_limit");
         Vec3 g = p.position().add(0, 0.1, 0);
         MagicUtil.magicCircle(level, g, 1.6, MagicUtil.purple(), MagicUtil.purpleRune(), 0.0);
         MagicUtil.explode(level, p.position().add(0, 0.8, 0), MagicUtil.purple(), 10, 0.25);
@@ -363,7 +363,7 @@ public final class SpellEffects {
         ServerPlayer p = c.player();
         ServerLevel level = c.level();
         List<LivingEntity> found = level.getEntitiesOfClass(LivingEntity.class,
-                p.getBoundingBox().inflate(32), e -> e != p && e.isAlive() && !e.isSpectator());
+                p.getBoundingBox().inflate(32 * Math.min(2.0f, c.power())), e -> e != p && e.isAlive() && !e.isSpectator());
         if (found.isEmpty()) return MagicUtil.fail(p, "no_target");
         for (LivingEntity e : found) {
             e.addEffect(new MobEffectInstance(MobEffects.GLOWING, 200, 0));
