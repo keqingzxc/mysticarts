@@ -1,6 +1,7 @@
 package com.mysticarts;
 
 import com.mojang.logging.LogUtils;
+import com.mysticarts.config.ClientConfig;
 import com.mysticarts.network.ModNetwork;
 import com.mysticarts.registry.ModBlocks;
 import com.mysticarts.registry.ModCreativeTabs;
@@ -8,7 +9,9 @@ import com.mysticarts.registry.ModEntities;
 import com.mysticarts.registry.ModItems;
 import com.mysticarts.registry.ModParticles;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -25,6 +28,7 @@ public class MysticArts {
         ModEntities.ENTITIES.register(bus);
         ModParticles.PARTICLES.register(bus);
         ModCreativeTabs.TABS.register(bus);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         bus.addListener(this::commonSetup);
     }
 
