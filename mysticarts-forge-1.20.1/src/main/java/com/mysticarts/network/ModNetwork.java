@@ -22,6 +22,10 @@ public class ModNetwork {
                 CycleSpellPacket::encode, CycleSpellPacket::decode, CycleSpellPacket::handle);
         CHANNEL.registerMessage(id++, SyncMagicPacket.class,
                 SyncMagicPacket::encode, SyncMagicPacket::decode, SyncMagicPacket::handle);
+        CHANNEL.registerMessage(id++, SkillActionPacket.class,
+                SkillActionPacket::encode, SkillActionPacket::decode, SkillActionPacket::handle);
+        CHANNEL.registerMessage(id++, FxPacket.class,
+                FxPacket::encode, FxPacket::decode, FxPacket::handle);
     }
 
     public static void sendToPlayer(ServerPlayer player, Object message) {
